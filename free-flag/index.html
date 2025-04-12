@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page With Flag</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        body { 
+            background-color: black; 
+            color: wheat;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="loading">Loading...</div>
+
+    <div class="ready" style="display:none;">
+        <h1>The flag is: </h1>
+        <p>1753c{<span></span>}</p>
+    </div>
+
+    <script>
+        async function getFlag() {
+            const flag = [0x45,0x00,0x50,0x39,0x08,0x6f,0x4d,0x5b,0x58,0x06,0x66,0x40,0x58,0x4c,0x6d,0x5d,0x16,0x6e,0x4f,0x00,0x43,0x6b,0x47,0x0a,0x44,0x5a,0x5b,0x5f,0x51,0x66,0x50,0x57]
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const resp = await fetch("https://timeapi.io/api/time/current/zone?timeZone=" + tz);
+            const date = await resp.json();
+            const base = date.timeZone + "-" + date.date + "-" + date.time;
+            var hash = CryptoJS.MD5(base).toString();
+
+            const result = flag.map((x, i) => String.fromCharCode(x ^ hash.charCodeAt(i))).join('')
+            document.querySelector('span').innerText = result;
+
+            document.getElementsByClassName('ready')[0].style.display = 'block';
+            document.getElementsByClassName('loading')[0].style.display = 'none';
+        }
+
+        getFlag();
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeBox</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        #fileList a {
+            cursor: pointer;
+            text-decoration: underline;
+            display: block;
+        }
+
+        #fileList {
+            margin-bottom: 10px;
+            ;
+        }
+
+        input {
+            border: solid 2px black;
+            padding: 4px 10px;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        img {
+            cursor: pointer;
+        }
+
+        .btn {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="safebox.png" onclick="start()" alt="SafeBox" style="width: 200px; height: 200px;">
+    <div class="page" id="register">
+        <h1>Register</h1>
+        <input type="text" id="register-username" placeholder="Username"><br />
+        <input type="password" id="register-password" placeholder="Password"><br />
+        <a href="#" class="btn" id="registerBtn">Register</a><br /><br />
+        <a href="#" id="goToLogin">Got account? Sign in!</a>
+    </div>
+    <div class="page" id="login">
+        <h1>Login</h1>
+        <input type="text" id="login-username" placeholder="Username"><br />
+        <input type="password" id="login-password" placeholder="Password"><br />
+        <a href="#" id="loginBtn">Login</a>
+    </div>
+    <div class="page" id="myfiles">
+        <h1>My Files</h1>
+        <div id="fileList"></div>
+        <br />
+        <a href="#" class="btn" id="goToUpload">Upload File</a>
+    </div>
+    <div class="page" id="upload">
+        <h1>Upload File</h1>
+        <input type="file" id="fileInput"><br /><br />
+        <a href="#" id="uploadBtn">Upload</a>
+    </div>
+
+    <script>
+
+        async function start() {
+            if (sessionStorage.getItem('token')) {
+                await loadFiles();
+                showPage('myfiles');
+            } else {
+                showPage('register');
+            }
+        }
+
+        start();
+
+        function showPage(pageID) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            const pageToShow = document.getElementById(pageID);
+            pageToShow.classList.add('active');
+        }
+
+        function logout() {
+            sessionStorage.removeItem('token');
+            showPage('login');
+        }
+
+        async function loadFiles() {
+            const token = sessionStorage.getItem('token');
+            const fileList = document.getElementById('fileList');
+
+            const response = await fetch('/api/myfiles', {
+                headers: { "x-token": token }
+            })
+
+            if (response.ok) {
+                const files = await response.json();
+                fileList.innerHTML = '';
+                files.forEach(file => {
+                    const fileLink = document.createElement('a');
+                    fileLink.innerText = file;
+                    fileLink.addEventListener('click', () => alert('Downloading files requires premium account!'));
+                    fileList.appendChild(fileLink);
+                });
+
+                if (files.length === 0) {
+                    fileList.innerText = 'No files yet.';
+                }
+            } else if (response.status == 401) {
+                logout();
+                alert('Session expired. Please login again.');
+                return;
+            } else {
+                alert(await response.text());
+            }
+        }
+
+        document.getElementById('goToLogin').addEventListener('click', () => {
+            showPage('login');
+        })
+
+        document.getElementById('goToUpload').addEventListener('click', () => {
+            showPage('upload');
+        })
+
+        document.getElementById('uploadBtn').addEventListener('click', async () => {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const token = sessionStorage.getItem('token');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    const data = reader.result.split(',')[1];
+                    const fileName = file.name;
+
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        headers: { "x-token": token, "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            fileName: fileName,
+                            b64file: data
+                        })
+                    })
+
+                    if (response.status == 401) {
+                        logout();
+                        alert('Session expired. Please login again.');
+                        return;
+                    }
+
+                    await loadFiles();
+                    showPage('myfiles');
+                };
+
+                reader.readAsDataURL(file);
+
+            } else {
+                alert('Please select a file to upload.');
+            }
+        })
+
+        document.getElementById('registerBtn').addEventListener('click', async () => {
+            const data = {
+                username: document.getElementById('register-username').value,
+                password: document.getElementById('register-password').value
+            }
+
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+
+            if (response.ok) {
+                const res = await response.json();
+                const token = res.token;
+                sessionStorage.setItem('token', token);
+                await loadFiles();
+                showPage('myfiles');
+            } else {
+                alert(await response.text());
+            }
+        })
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const data = {
+                username: document.getElementById('login-username').value,
+                password: document.getElementById('login-password').value
+            }
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+
+            if (response.ok) {
+                const res = await response.json();
+                const token = res.token;
+                sessionStorage.setItem('token', token);
+                await loadFiles();
+                showPage('myfiles');
+            } else {
+                alert(await response.text());
+            }
+        })
+    </script>
+</body>
+
+</html>

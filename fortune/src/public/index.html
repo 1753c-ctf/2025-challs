@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Good Luck!</title>
+    <style>
+        body { background-image: url('bg.png'); background-size: cover; margin: 0; padding: 0; padding-top: 100px; text-align: center; }
+        #fortune { width: 600px; margin: 0 auto; color:white; font-style: italic; margin-top: 24px; }
+    </style>
+</head>
+<body>
+
+    <img src="logo.png" width="400"><br />
+    <select id="categorySelect"></select>
+    <button id="getFortune">Get Fortune</button>
+    <div id="fortune"></div>
+
+    <script>
+        // Set up Module configuration for Emscripten
+        var Module = {
+            onRuntimeInitialized: function() {
+                // Create wrapped functions that can be called from JavaScript
+                window.getCategories = Module.cwrap('GetCategories', 'string', [], { async: true });
+                window.getFortune = Module.cwrap('GetFortune', 'string', ['string'], { async: true });
+                
+                // Load categories when WASM is ready
+                loadCategories();
+            }
+        };
+
+        async function loadCategories() {
+            try {
+                const categoriesJson = await window.getCategories();
+
+                try {
+                    // Parse JSON and populate dropdown
+                    const categories = JSON.parse(categoriesJson);
+                    const select = document.getElementById('categorySelect');
+                    select.innerHTML = '';
+                    
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category;
+                        select.appendChild(option);
+                    });
+                } catch (parseError) {
+                    console.error('Error parsing categories JSON:', parseError);
+                }
+            } catch (e) {
+                console.error('Error loading categories:', e);
+                document.getElementById('categories').textContent = 'Error loading categories';
+            }
+        }
+
+        document.getElementById('getFortune').addEventListener('click', async function() {
+            try {
+                const category = document.getElementById('categorySelect').value;
+                const fortuneJson = await window.getFortune(category);
+                document.getElementById('fortune').innerHTML = fortuneJson;
+            } catch (e) {
+                console.error('Error getting fortune:', e);
+                document.getElementById('fortune').textContent = 'Error getting fortune';
+            }
+        });
+    </script>
+    <script async src="fortune_api.js"></script>
+</body>
+</html>

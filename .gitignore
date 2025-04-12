@@ -1,0 +1,10 @@
+node_modules
+.DS_Store
+.vscode
+dist
+.parcel-cache
+page_cache
+bin
+obj
+disk_cache
+uploads_dir

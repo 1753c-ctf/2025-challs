@@ -1,0 +1,4 @@
+docker build . -t data_saver
+cont_id=$(docker create data_saver)
+docker cp $cont_id:/app/data_saver data_saver
+docker rm $cont_id

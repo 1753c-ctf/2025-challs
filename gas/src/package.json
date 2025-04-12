@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@mendable/firecrawl-js": "^1.21.1",
+    "@mozilla/readability": "^0.6.0",
+    "cheerio": "^1.0.0",
+    "discord.js": "^14.18.0",
+    "extract-first-json": "^2.0.2",
+    "header-generator": "^2.1.63",
+    "http-proxy-agent": "^7.0.2",
+    "https-proxy-agent": "^7.0.6",
+    "md5": "^2.3.0",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.93.0",
+    "socks-proxy-agent": "^8.0.5"
+  }
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com/?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>esCATlate</title>
+</head>
+<body class="bg-gradient-to-t from-[#545350] to=[#ffffff] h-screen w-auto h-auto">
+
+   <header class="bg-white">
+        <nav class="flex items-center justify-between p-4">
+            <div>
+                <img class="w-16"  src="animal-shelter.png" alt="Logo">
+            </div>
+            <div class="flex-grow text-center">
+                <h3 class="text-black-400">We love cats!!</h3>
+            </div>
+            <div class="ml-auto">
+                <button id="openModalBtn" class="bg-[#5b9fd9] text-white px-5 py-2 rounded-md hover:bg-[#a6c1ee] transition-all duration-300">
+                    Sign in
+                </button>
+            </div>
+        </nav>
+   </header>
+
+   <!-- Section 1: Image on the left and text on the right -->
+   <section class="flex flex-col items-center p-12"> <!-- Zmieniono na flex-col, żeby elementy były jeden pod drugim -->
+    <!-- Left side: Image -->
+    <div class="mb-4"> <!-- Dodano margines, żeby oddzielić obrazek od tekstu -->
+        <img src="images/img.webp" alt="Description of Image" class="w-full h-auto object-cover rounded-lg shadow-lg">
+    </div>
+
+    <!-- Right side: Text -->
+    <div>
+        <p class="text-lg text-gray-700">I'm Sir Gregory, today I'm going to be your guide to our cat community, I'm going to take you to the real life of cats that you don't know about, buckle up and let's go or maybe first take off your shoes.</p>
+    </div>
+</section>
+
+   <!-- Login/Register Modal -->
+   <section id="authSection" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden transition-opacity duration-300">
+    <div id="modalContainer" class="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+        <!-- Close Button (X) -->
+        <button id="closeModalBtn" class="absolute top-2 right-3 text-gray-500 hover:text-gray-800 text-xl">
+            &times;
+        </button>
+
+        <h2 class="text-center text-2xl mb-4">Login / Register</h2>
+        <div class="space-y-4">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+            </div>
+            <div class="flex justify-between">
+                <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all duration-200">Login</button>
+                <button id="registerBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-all duration-200">Register</button>
+            </div>
+        </div>
+
+        <!-- Error message -->
+        <p id="errorMsg" class="text-red-500 text-center mt-3 hidden"></p>
+    </div>
+</section>
+    <script src="index.js"></script>
+    <script src="auth.js"></script>
+   
+
+</body>
+</html>

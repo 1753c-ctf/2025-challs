@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHEAT LOAD OF SHEETS</title>
+    <style>
+
+        body, html { 
+            margin: 0; padding: 0;
+            background-color: #2B2A31; 
+        }
+
+        .main { 
+            width: 600px;
+            margin: 30px auto;
+            text-align: center;
+            color: #F9FADD
+        }
+
+        a { color: #F9FADD; }
+        img { width: 60%; cursor: pointer; }
+
+        .document-link {
+            font-size: 1.4em;
+        }
+
+        .report-link {
+            font-size: 0.8em;
+            display: block;
+            text-decoration: none;
+        }
+
+        .disclaimer {
+            margin-top: 40px;
+        }
+
+        h1 { font-size: 1.3em; }
+        iframe { width: 100%; height: 310px; }
+
+    </style>
+</head>
+<body>
+    <div class="main">
+        <img src="logo.png" onclick="document.location.href = '/'" />
+        <div id="content">
+        </div>
+        <div class="disclaimer">These PDFs might contain some mistakes.<br /> Make sure to report to us any of them.</div>
+    </div>
+
+    <script>
+        var files = [
+            //{ name: "Flag", url: "/app/admin/flag.pdf" },
+            { name: "Blue Team Cheatsheet", url: "public/BLUE.pdf" },
+            { name: "Penetration Testing Cheatsheet", url: "public/PTEST.pdf" },
+            { name: "Infrastructure Hardening Cheatsheet", url: "public/INFRA.pdf" },
+            { name: "CTF Players Cheatsheet", url: "public/CTF.pdf" },
+            { name: "Base64 Encryption Cheatsheet", url: "public/B64.pdf" },
+            { name: "Top Secret Cheatsheet", url: "public/UFO.pdf" },
+        ]
+        var content = document.getElementById("content");
+        var file = document.location.search.replace("?document=", "");
+
+        if(!file)
+        {
+            for(var i = 0; i < files.length; i++)
+            {
+                var link = document.createElement("a");
+                link.href = "/?document=" + encodeURI(files[i].url);
+                link.innerText = files[i].name;
+                link.classList.add("document-link")
+
+                var reportLink = document.createElement("a");
+                reportLink.href = "/report?document=" + encodeURI(files[i].url);
+                reportLink.innerText = "(report to admin)";
+                reportLink.target = "_blank"
+                reportLink.classList.add("report-link")
+
+                var p = document.createElement("p");
+
+                p.appendChild(link);
+                p.appendChild(reportLink);
+
+                content.appendChild(p);
+            }
+        }
+        else
+        {
+            var h1 = document.createElement("h1")
+            h1.innerText = files.find(f => file.endsWith(f.url))?.name;
+
+            var pdf = document.createElement("iframe")
+            pdf.src = "app/viewer.html?file=" + encodeURI(file)
+
+            content.appendChild(h1);
+            content.appendChild(pdf);
+
+        }
+    </script>
+</body>
+</html>

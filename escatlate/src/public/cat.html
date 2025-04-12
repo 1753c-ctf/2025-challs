@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-t from-[#545350] to-[#ffffff] min-h-screen text-gray-800">
+
+    <header class="bg-white shadow-md">
+        <nav class="flex justify-between items-center p-4">
+            <img src="animal-shelter.png" alt="Logo" class="w-12">
+            <h1 class="text-2xl font-bold">We love cats!!</h1>
+            <button id="backBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Back</button>
+        </nav>
+    </header>
+
+    <main class="flex flex-col items-center p-6">
+        <div id="catDetails" class="text-center max-w-md w-full">
+            <img 
+    id="catImage" 
+    src="" 
+    alt="Cat Image" 
+    class="w-full max-h-[70vh] object-contain rounded shadow mb-4"
+/>
+            <h2 id="catName" class="text-2xl font-semibold mb-2"></h2>
+            <p id="catDescription" class="mb-6 text-gray-700"></p>
+
+            <section id="commentsSection" class="bg-white p-4 rounded shadow">
+                <h3 class="text-xl font-bold mb-4">Comments</h3>
+                <div id="commentsList" class="space-y-2 mb-4 w-full break-words"></div>
+                <textarea id="commentText" placeholder="Add a comment..." class="w-full p-2 border rounded mb-2"></textarea>
+                <button id="submitCommentBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit</button>
+            </section>
+        </div>
+    </main>
+
+    <script src="cat.js"></script>
+</body>
+</html>
